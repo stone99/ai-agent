@@ -12,13 +12,14 @@ class ExecutableGameLauncher(GameLauncher):
 
     def launch(self, **kwargs):
         executable_path = kwargs.get("executable_path")
+        current_work_directory = kwargs.get("current_work_directory")
 
         if executable_path is None:
             raise GameLauncherException("An 'executable_path' kwarg is required...")
 
         if is_linux():
-            subprocess.Popen(shlex.split(executable_path))
+            subprocess.Popen(shlex.split(executable_path),cwd=current_work_directory)
         elif is_macos():
-            subprocess.Popen(shlex.split(executable_path))
+            subprocess.Popen(shlex.split(executable_path),cwd=current_work_directory)
         elif is_windows():
-            subprocess.Popen(shlex.split(executable_path))
+            subprocess.Popen(shlex.split(executable_path),cwd=current_work_directory)
