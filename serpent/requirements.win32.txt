@@ -21,3 +21,9 @@ crossbar
 
 # Misc
 editdistance
+
+# SciPy
+numpy
+scikit-learn
+scikit-image
+h5py
