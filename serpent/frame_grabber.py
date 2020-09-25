@@ -157,12 +157,13 @@ class FrameGrabber:
 
     @classmethod
     def get_frames_with_pipeline(cls, frame_buffer_indices, **kwargs):
+        print("redis_client.llen")
         while True:
             if redis_client.llen(config["frame_grabber"]["redis_key"]) > 149:
                 break
 
             time.sleep(0.1)
-
+        print("end sleep")
         game_frame_buffers = [
             GameFrameBuffer(size=len(frame_buffer_indices)),
             GameFrameBuffer(size=len(frame_buffer_indices))

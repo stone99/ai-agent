@@ -230,13 +230,17 @@ class Game(offshoot.Pluggable):
         # Override FPS Config?
         if frame_handler == "RECORD":
             self.game_frame_limiter = GameFrameLimiter(fps=10)
-
+        print("start loop")
         try:
             while True:
+
+                print("start game_frame_limiter")
                 self.game_frame_limiter.start()
 
+                print("start grab_latest_frame")
                 game_frame, game_frame_pipeline = self.grab_latest_frame()
 
+                print("finish grab_latest_frame")
                 try:
                     if self.is_focused:
                         self.pause_callback_fired = False
@@ -253,7 +257,7 @@ class Game(offshoot.Pluggable):
                     raise e
                     # print(e)
                     # time.sleep(0.1)
-
+                print("self.game_frame_limiter.stop_and_delay()")
                 self.game_frame_limiter.stop_and_delay()
         except Exception as e:
             raise e

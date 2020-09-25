@@ -433,7 +433,7 @@ class GameAgent(offshoot.Pluggable):
     def reward_test(self, frames, **kwargs):
         return random.choice(range(0, 10))
 
-    def _setup_frame_handler(self, frame_handler=None, **kwargs):
+    def _setup_frame_handler(self, frame_handler=None, **kwargs):dw
         frame_handler = frame_handler or self.config.get("frame_handler", "NOOP")
 
         if frame_handler in self.frame_handler_setups:
