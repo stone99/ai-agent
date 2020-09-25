@@ -38,6 +38,7 @@ def install(plugin):
 
     plugin_module_string = plugin_path.replace(os.sep, ".").replace(".py", "")
 
+    print("execute", [sys.executable.split(os.sep)[-1], "-m", "%s" % plugin_module_string, "install"])
     subprocess.call([sys.executable.split(os.sep)[-1], "-m", "%s" % plugin_module_string, "install"])
 
 

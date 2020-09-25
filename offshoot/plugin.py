@@ -88,6 +88,7 @@ class Plugin:
 
                 # Pluggable Validation
                 if "pluggable" in file_dict:
+                    print(plugin_file_path, file_dict["pluggable"])
                     is_valid, messages = cls._validate_file_for_pluggable(plugin_file_path, file_dict["pluggable"])
 
                     if not is_valid:
