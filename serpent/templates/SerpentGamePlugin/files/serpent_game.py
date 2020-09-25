@@ -6,8 +6,6 @@ from serpent.utilities import Singleton
 
 from serpent.game_launchers.web_browser_game_launcher import WebBrowser
 
-import time
-
 
 class SerpentGame(Game, metaclass=Singleton):
 
@@ -27,9 +25,6 @@ class SerpentGame(Game, metaclass=Singleton):
         self.api_class = MyGameAPI
         self.api_instance = None
 
-        self.environments = dict()
-        self.environment_data = dict()
-
     @property
     def screen_regions(self):
         regions = {
@@ -38,34 +33,21 @@ class SerpentGame(Game, metaclass=Singleton):
 
         return regions
 
-    def after_launch(self):
-        self.is_launched = True
+    @property
+    def ocr_presets(self):
+        presets = {
+            "SAMPLE_PRESET": {
+                "extract": {
+                    "gradient_size": 1,
+                    "closing_size": 1
+                },
+                "perform": {
+                    "scale": 10,
+                    "order": 1,
+                    "horizontal_closing": 1,
+                    "vertical_closing": 1
+                }
+            }
+        }
 
-        current_attempt = 1
-
-        while current_attempt <= 100:
-            self.window_id = self.window_controller.locate_window(self.window_name)
-
-            if self.window_id not in [0, "0"]:
-                break
-
-            time.sleep(0.1)
-
-        time.sleep(0.5)
-
-        if self.window_id in [0, "0"]:
-            raise SerpentError("Game window not found...")
-
-        self.window_controller.move_window(self.window_id, 0, 0)
-
-        self.dashboard_window_id = self.window_controller.locate_window("Serpent.AI Dashboard")
-
-        # TODO: Test on macOS and Linux
-        if self.dashboard_window_id is not None and self.dashboard_window_id not in [0, "0"]:
-            self.window_controller.bring_window_to_top(self.dashboard_window_id)
-
-        self.window_controller.focus_window(self.window_id)
-
-        self.window_geometry = self.extract_window_geometry()
-
-        print(self.window_geometry)
+        return presets
