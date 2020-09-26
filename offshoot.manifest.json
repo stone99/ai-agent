@@ -14,6 +14,21 @@
             "config": {
                 "frame_handler": "PLAY"
             }
+        },
+        "SerpentwowGamePlugin": {
+            "name": "SerpentwowGamePlugin",
+            "version": "0.1.0",
+            "files": [
+                {
+                    "path": "serpent_wow_game.py",
+                    "pluggable": "Game"
+                }
+            ],
+            "plugins": [],
+            "libraries": [],
+            "config": {
+                "fps": 2
+            }
         }
     }
 }

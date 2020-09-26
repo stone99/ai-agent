@@ -1,2 +1,4 @@
 SerpentwowGameAgentPlugin:
   frame_handler: PLAY
+SerpentwowGamePlugin:
+  fps: 2
