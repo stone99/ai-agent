@@ -1,5 +1,19 @@
 {
     "plugins": {
-
+        "SerpentwowGameAgentPlugin": {
+            "name": "SerpentwowGameAgentPlugin",
+            "version": "0.1.0",
+            "files": [
+                {
+                    "path": "serpent_wow_game_agent.py",
+                    "pluggable": "GameAgent"
+                }
+            ],
+            "plugins": [],
+            "libraries": [],
+            "config": {
+                "frame_handler": "PLAY"
+            }
+        }
     }
 }
