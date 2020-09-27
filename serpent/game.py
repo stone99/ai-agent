@@ -10,6 +10,7 @@ import time
 import os, os.path
 import atexit
 import asyncio
+import concurrent.futures
 
 from serpent.game_agent import GameAgent
 
@@ -200,10 +201,10 @@ class Game(offshoot.Pluggable):
             raise GameError(f"Game '{self.__class__.__name__}' is not running...")
 
         self.start_crossbar()
-        time.sleep(3)
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.start_input_controller())
 
+        time.sleep(3)
+
+        self.start_input_controller()
 
         game_agent_class = offshoot.discover("GameAgent", selection=game_agent_class_name).get(game_agent_class_name, GameAgent)
 
@@ -340,7 +341,7 @@ class Game(offshoot.Pluggable):
         atexit.unregister(self._handle_signal_crossbar)
 
     @offshoot.forbidden
-    async def start_input_controller(self):
+    def start_input_controller(self):
         if self.input_controller_process is not None:
             self.stop_input_controller()
 
@@ -355,7 +356,7 @@ class Game(offshoot.Pluggable):
         #atexit.register(self._handle_signal_input_controller, 15, None, False)
 
 
-        await InputControllerComponent.run()
+        InputControllerComponent.run()
 
     @offshoot.forbidden
     def stop_input_controller(self):
