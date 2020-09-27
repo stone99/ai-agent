@@ -1,14 +1,25 @@
+
 # Serpent only supports Windows through Anaconda. These are the missing packages from the Anaconda Distribution
-
-# Plugins
-offshoot
-
-# Redis
-redis
-aioredis
 
 # Frame Capture
 mss
+
+# Input
+PyAutoGUI
+pyperclip
+win32gui
+
+# Kivy
+Kivy
+
+# OCR
+pytesseract
+
+# Network
+autobahn
+
+# Misc
+editdistance
 
 # Input
 PyAutoGUI
@@ -19,6 +30,7 @@ sneakysnek
 autobahn
 crossbar
 
+#pip install -upgrade --force-reinstall crossbar
 # Misc
 editdistance
 

@@ -9,6 +9,7 @@ import shlex
 import time
 import os, os.path
 import atexit
+import asyncio
 
 from serpent.game_agent import GameAgent
 
@@ -24,6 +25,8 @@ from serpent.game_frame_limiter import GameFrameLimiter
 from serpent.sprite import Sprite
 
 from serpent.utilities import clear_terminal, is_windows, SerpentError
+
+from serpent.wamp_components.input_controller_component import InputControllerComponent
 
 import skimage.io
 import skimage.color
@@ -198,8 +201,9 @@ class Game(offshoot.Pluggable):
 
         self.start_crossbar()
         time.sleep(3)
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.start_input_controller())
 
-        self.start_input_controller()
 
         game_agent_class = offshoot.discover("GameAgent", selection=game_agent_class_name).get(game_agent_class_name, GameAgent)
 
@@ -219,11 +223,11 @@ class Game(offshoot.Pluggable):
             if not self.frame_transformation_pipeline_string.endswith("|PNG"):
                 self.frame_transformation_pipeline_string += "|PNG"
 
-        self.start_frame_grabber()
-        self.redis_client.delete(config["frame_grabber"]["redis_key"])
+        #self.start_frame_grabber()
+        #self.redis_client.delete(config["frame_grabber"]["redis_key"])
 
-        while self.redis_client.llen(config["frame_grabber"]["redis_key"]) == 0:
-            time.sleep(0.1)
+        #while self.redis_client.llen(config["frame_grabber"]["redis_key"]) == 0:
+        #    time.sleep(0.1)
 
         self.window_controller.focus_window(self.window_id)
 
@@ -237,14 +241,14 @@ class Game(offshoot.Pluggable):
                 print("start game_frame_limiter")
                 self.game_frame_limiter.start()
 
-                print("start grab_latest_frame")
-                game_frame, game_frame_pipeline = self.grab_latest_frame()
+                #print("start grab_latest_frame")
+                #game_frame, game_frame_pipeline = self.grab_latest_frame()
 
                 print("finish grab_latest_frame")
                 try:
                     if self.is_focused:
                         self.pause_callback_fired = False
-                        game_agent.on_game_frame(game_frame, game_frame_pipeline, frame_handler=frame_handler, **kwargs)
+                        #game_agent.on_game_frame(game_frame, game_frame_pipeline, frame_handler=frame_handler, **kwargs)
                     else:
                         if not self.pause_callback_fired:
                             print("PAUSED\n")
@@ -336,20 +340,22 @@ class Game(offshoot.Pluggable):
         atexit.unregister(self._handle_signal_crossbar)
 
     @offshoot.forbidden
-    def start_input_controller(self):
+    async def start_input_controller(self):
         if self.input_controller_process is not None:
             self.stop_input_controller()
 
-        self.redis_client.set("SERPENT:GAME", self.__class__.__name__)
+        #self.redis_client.set("SERPENT:GAME", self.__class__.__name__)
+        #input_controller_command = f"python -m serpent.wamp_components.input_controller_component"
 
-        input_controller_command = f"python -m serpent.wamp_components.input_controller_component"
+        #self.input_controller_process = subprocess.Popen(shlex.split(input_controller_command))
 
-        self.input_controller_process = subprocess.Popen(shlex.split(input_controller_command))
+        #signal.signal(signal.SIGINT, self._handle_signal_input_controller)
+        #signal.signal(signal.SIGTERM, self._handle_signal_input_controller)
 
-        signal.signal(signal.SIGINT, self._handle_signal_input_controller)
-        signal.signal(signal.SIGTERM, self._handle_signal_input_controller)
+        #atexit.register(self._handle_signal_input_controller, 15, None, False)
 
-        atexit.register(self._handle_signal_input_controller, 15, None, False)
+
+        await InputControllerComponent.run()
 
     @offshoot.forbidden
     def stop_input_controller(self):

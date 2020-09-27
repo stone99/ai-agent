@@ -89,7 +89,7 @@ class GameAgent(offshoot.Pluggable):
 
         self.frame_handler_setup_performed = False
 
-        self.visual_debugger = VisualDebugger()
+        #self.visual_debugger = VisualDebugger()
 
         self.game_frame_buffer = GameFrameBuffer(size=self.config.get("game_frame_buffer_size", 5))
         self.game_context = None

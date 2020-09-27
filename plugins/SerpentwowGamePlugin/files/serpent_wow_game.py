@@ -12,7 +12,7 @@ class SerpentwowGame(Game, metaclass=Singleton):
     def __init__(self, **kwargs):
         kwargs["platform"] = "executable"
 
-        kwargs["window_name"] = "WINDOW_NAME"
+        kwargs["window_name"] = "魔兽世界"
 
         
         

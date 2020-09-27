@@ -18,7 +18,7 @@ import offshoot
 
 class InputControllerComponent:
     @classmethod
-    def run(cls):
+    async def run(cls):
         print(f"Starting {cls.__name__}...")
 
         url = "ws://%s:%s" % (config["crossbar"]["host"], config["crossbar"]["port"])
@@ -48,13 +48,14 @@ class InputControllerWAMPComponent(ApplicationSession):
         return signature.decode('ascii')
 
     async def onJoin(self, details):
-        self.redis_client = await self._initialize_redis_client()
+        #self.redis_client = await self._initialize_redis_client()
 
-        game_class_name = await self.redis_client.get("SERPENT:GAME")
-        game_class = offshoot.discover("Game")[game_class_name.decode("utf-8")]
+        #game_class_name = await self.redis_client.get("SERPENT:GAME")
+        #game_class = offshoot.discover("Game")[game_class_name.decode("utf-8")]
+        from serpent.game import Game
 
-        game = game_class()
-        game.launch(dry_run=True)
+        game = Game()
+        #game.launch(dry_run=True)
 
         backend_string=config["input_controller"]["backend"]
 
@@ -68,14 +69,21 @@ class InputControllerWAMPComponent(ApplicationSession):
 
         self.input_controller = InputController(game=game, backend=backend)
 
-        while True:
-            payload = await self.redis_client.brpop(config["input_controller"]["redis_key"])
-            payload = pickle.loads(payload[1])
+        #while True:
+            #payload = await self.redis_client.brpop(config["input_controller"]["redis_key"])
+            #payload = pickle.loads(payload[1])
 
+            #input_controller_func_string, *args, kwargs = payload
+            #getattr(self.input_controller, input_controller_func_string)(*args, **kwargs)
+
+            #await asyncio.sleep(0.01)
+
+        def input_controller_sub_func(payload):
             input_controller_func_string, *args, kwargs = payload
             getattr(self.input_controller, input_controller_func_string)(*args, **kwargs)
 
-            await asyncio.sleep(0.01)
+        self.subscribe(input_controller_sub_func, config["input_controller"]["redis_key"])
+        print("subscribed to topic")
 
     async def _initialize_redis_client(self):
         return await aioredis.create_redis(
